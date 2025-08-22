@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Bonk ur freind</title>
+    <title>Top Center Layout</title>
     <style>
         body {
             display: flex;
@@ -20,6 +20,7 @@
             max-width: 400px;
         }
         
+        /* File upload styling */
         .file-upload {
             position: fixed;
             bottom: 20px;
@@ -150,6 +151,7 @@
         
         const clickSound = new Audio("assets/bonk.mp3");
         let splatterTimeout;
+        let imageLoaded = false;
 
         // Handle image upload
         imageUpload.addEventListener('change', function(event) {
@@ -193,6 +195,11 @@
         }
 
         button.addEventListener("mousedown", () => {
+            if (!imageLoaded) {
+                result.textContent = "Please upload an image to bonk!";
+                return;
+            }
+            
             playSound();
             bat.classList.remove("swing");
             void bat.offsetWidth; 
@@ -200,7 +207,13 @@
 
             showSplatter();
         }); 
-        button.addEventListener("touchstart", playSound);  
+        button.addEventListener("touchstart", (e) => {
+            if (!imageLoaded) {
+                result.textContent = "Please upload an image to bonk!";
+                return;
+            }
+            playSound();
+        });  
     </script>
 </body>
 </html>
