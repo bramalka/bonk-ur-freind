@@ -20,7 +20,6 @@
             max-width: 400px;
         }
         
-        /* File upload styling */
         .file-upload {
             position: fixed;
             bottom: 20px;
@@ -153,27 +152,25 @@
         let splatterTimeout;
         let imageLoaded = false;
 
-        // Handle image upload
         imageUpload.addEventListener('change', function(event) {
             const file = event.target.files[0];
             if (file) {
-                // Check if it's an image file
                 if (!file.type.startsWith('image/')) {
                     alert('Please select an image file!');
                     return;
                 }
                 
-                // Create a FileReader to read the file
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     targetImg.src = e.target.result;
                 };
                 reader.readAsDataURL(file);
+                imageLoaded = true;
             }
         });
 
         function playSound() {
-            result.textContent = "THANK YOU FOR BONKING THIS STUPID MF";
+            result.textContent = "KEEP BONKING THIS STUPID MF";
             clickSound.currentTime = 0; 
             clickSound.play().catch(e => {
                 // Handle audio play error (e.g., user hasn't interacted with page yet)
