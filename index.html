@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bonk ur freind</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;  
+            align-items: flex-start;  
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            text-align: center;   
+            margin-top: 20px;     
+        }
+        img#target {
+            display: block;
+            margin: 0 auto 15px auto; 
+            max-width: 400px;
+        }
+        
+        .file-upload {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 10;
+        }
+        
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        .file-label {
+            display: inline-block;
+            padding: 8px 16px;
+            background-color: #2196F3;
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+        
+        .file-label:hover {
+            background-color: #1976D2;
+        }
+        
+        button {
+            display: block;
+            margin: 0 auto 15px auto; 
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: none;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        p {
+            margin: 0;
+            font-size: 16px;
+            color: #333;
+        }
+
+        img#bat {
+            position: absolute;
+            top: 50px;        
+            left: 39%;        
+            transform: translateX(-50%) rotate(0deg);
+            height: 320px;    
+            width: auto;
+            transform-origin: left bottom; 
+            opacity: 0;
+            z-index: 2;       
+        }
+
+        img#splatter {
+            position: absolute;
+            top: 110px;   
+            left: 50%;
+            transform: translateX(-50%);
+            height: 150px;
+            width: 200px;
+            opacity: 0;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .swing {
+            animation: swing-bat 0.3s forwards;
+        }
+
+        @keyframes swing-bat {
+            0% {
+                transform: rotate(45deg) translateX(0);
+                opacity: 1;
+            }
+            100% {
+                transform: rotate(0deg) translateX(0px);
+                opacity: 1; 
+            }
+        }
+
+        .splash {
+            animation: splatter-anim 0.4s forwards;
+        }
+
+        @keyframes splatter-anim {
+            0% { opacity: 0; transform: scale(0.1) translateX(-50%); }
+            10% { opacity: 0; transform: scale(0.2) translateX(-50%); }
+            30% { opacity: 1; transform: scale(1.1) translateX(-50%); }
+            100% { opacity: 1; transform: scale(1) translateX(-50%); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="file-upload">
+            <div class="file-input-wrapper">
+                <input type="file" id="imageUpload" class="file-input" accept="image/*">
+                <label for="imageUpload" class="file-label">Choose Image to Bonk</label>
+            </div>
+        </div>
+
+        <img src="person/arip.jpg" id="target" alt="Target">
+        <img src="assets/blood.png" id="splatter" alt="Blood">
+        <img src="assets/baseball-bat.png" id="bat" alt="Bat">
+
+        <button id="myButton">BONK!</button>
+
+        <p id="result"></p>
+    </div>
+
+    <script>
+        const button = document.getElementById("myButton");
+        const result = document.getElementById("result");
+        const splatter = document.getElementById("splatter");
+        const bat = document.getElementById("bat");
+        const targetImg = document.getElementById("target");
+        const imageUpload = document.getElementById("imageUpload");
+        
+        const clickSound = new Audio("assets/bonk.mp3");
+        let splatterTimeout;
+
+        // Handle image upload
+        imageUpload.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                // Check if it's an image file
+                if (!file.type.startsWith('image/')) {
+                    alert('Please select an image file!');
+                    return;
+                }
+                
+                // Create a FileReader to read the file
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    targetImg.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        function playSound() {
+            result.textContent = "THANK YOU FOR BONKING THIS STUPID MF";
+            clickSound.currentTime = 0; 
+            clickSound.play().catch(e => {
+                // Handle audio play error (e.g., user hasn't interacted with page yet)
+                console.log('Audio play failed:', e);
+            });
+        }
+
+        function showSplatter() {
+            splatter.classList.remove("splash");
+            void splatter.offsetWidth;
+            splatter.classList.add("splash");
+            splatter.style.opacity = "1";
+
+            clearTimeout(splatterTimeout);
+
+            splatterTimeout = setTimeout(() => {
+                splatter.style.opacity = "0";
+            }, 1000);
+        }
+
+        button.addEventListener("mousedown", () => {
+            playSound();
+            bat.classList.remove("swing");
+            void bat.offsetWidth; 
+            bat.classList.add("swing");
+
+            showSplatter();
+        }); 
+        button.addEventListener("touchstart", playSound);  
+    </script>
+</body>
+</html>
